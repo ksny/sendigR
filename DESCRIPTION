@@ -15,7 +15,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: data.table, readxl, magrittr, xfun, stringr, DBI, DescTools,
         parsedate, stringi
-Suggests: RSQLite, ROracle, SASxport, sjlabelled, logr, knitr,
+Suggests: RSQLite, SASxport, sjlabelled, logr, knitr,
         rmarkdown
 VignetteBuilder: knitr
 Depends: R (>= 2.10)
