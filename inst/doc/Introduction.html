@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2021-03-31" />
+
+<title>Introduction to sendigR</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to sendigR</h1>
+<h4 class="date">2021-03-31</h4>
+
+
+
+<p>The purpose of the <code>sendigR</code> package is to extract data from a set of nonclinical studies stored in <a href="https://www.cdisc.org/standards/foundational/send">CDISC SEND</a> format in a database to be used for cross study analysis. It can either be done in a script execution a set of functions from the package or by execution an encapsulated R Shiny application.</p>
+<p>The package supports currently these types of databases:</p>
+<ul>
+<li><a href="https://www.sqlite.org/index.html">SQLite</a> It’s possible access an existing SEND database or build a database with SEND data imported from SAS transport/xpt files, which then can be accessed.</li>
+<li>Oracle It’s possible to access an already existing SEND database</li>
+</ul>
+<p>This vignettes introduces how to use <code>sendigR</code> to:</p>
+<ul>
+<li>initiate the use of the functions.</li>
+<li>build and maintain a SQLite database of SEND data.</li>
+<li>filter and extract SEND data from a database.</li>
+<li>execute the R Shiny application to browse the SEND control data stored in the database.</li>
+</ul>
+<p>Familiarity with the CDISC SEND data model and at least basic knowledge about animal studies is necessary to follow this vignette and to use the package.</p>
+<div id="getting-started" class="section level1">
+<h1>Getting started</h1>
+<p>Before we are ready to use the functions in the package, we must ensure that a minimum of prerequisites are fulfilled.</p>
+<div id="package-dependencies" class="section level2">
+<h2>Package dependencies</h2>
+<p>Beside the required packages listed in the Imports section of <a href="../DESCRIPTION">DESCRIPTION</a>, one or more additional package(s) must be installed:</p>
+<ul>
+<li>If the SEND databases is stored - or are to be build - in a SQLite database:
+<ul>
+<li><em>RSQLite</em></li>
+</ul></li>
+<li>If the SEND databases is stored in an Oracle database:
+<ul>
+<li><em>ROracle</em></li>
+</ul></li>
+<li>If a SEND database are to be build using this package’s functions
+<ul>
+<li><em>SASxport</em></li>
+<li><em>sjlabelled</em></li>
+</ul></li>
+<li>If the sendDashboard app is to be executed:
+<ul>
+<li>TO BE ADDED</li>
+</ul></li>
+</ul>
+</div>
+<div id="database" class="section level2">
+<h2>Database</h2>
+<p>If an existing SEND database is to be accessed, it must contain a set of tables and columns representing the domains and variables described in the SEND IG version <a href="https://www.cdisc.org/standards/foundational/send/sendig-v3-0">3.0</a> or <a href="https://www.cdisc.org/standards/foundational/send/sendig-v3-1">3.1</a> - or a union of the two versions.</p>
+<p>It is required that all names and basic data types (i.e. numerical or character) are as described the the SEND IG.</p>
+</div>
+<div id="study-data-to-import" class="section level2">
+<h2>Study data to import</h2>
+<p>If study data are to be imported into a SQLite database, data for each study must be located in a separate folder as <a href="https://documentation.sas.com/?cdcId=pgmsascdc&amp;cdcVersion=9.4_3.5&amp;docsetId=movefile&amp;docsetTarget=n1xbwdre0giahfn11c99yjkpi2yb.htm&amp;locale=en">SAS transport</a> files - also konw as XPT files.</p>
+<p>Multiple studies may be located together in a folder hierarchy as described below.</p>
+</div>
+<div id="send-controlled-terminology" class="section level2">
+<h2>SEND controlled terminology</h2>
+<p>Several of the function in the packages uses CDISC SEND terminology code list to verify validity of the SEND data. The package includes the values for the relevant code lists extracted from the newest CT version at build time. If it is relevant to use another version - newer or older - this version must be downloaded in Excel format from <a href="https://evs.nci.nih.gov/ftp1/CDISC/SEND/">NCI</a> or <a href="https://www.cdisc.org/members-only/cdisc-library-archives">CDISC library archives</a> and saved in a folder.</p>
+</div>
+</div>
+<div id="function-overview." class="section level1">
+<h1>Function overview.</h1>
+<p>The package contains 5 sets of functions covering different areas - each of these are described below, including detailed examples.</p>
+<div id="initiation-and-closure-of-send-environment" class="section level2">
+<h2>Initiation and closure of SEND environment</h2>
+<p>Before any use of the package’s function, a database must be opened and the database must be closed again as the final action.</p>
+<table>
+<colgroup>
+<col width="7%"></col>
+<col width="92%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="../html/initEnvironment.html">initEnvironment</a></td>
+<td>Initialize the environment. It must be executed as the absolute first function before any other package functions. It opens an existing or create a new empty database and returns a handle to the database, which must be used in all following function calls.</td>
+</tr>
+<tr class="even">
+<td><a href="../html/disconnectDB.html">disconnectDB</a></td>
+<td>Close the open database. It must be called as the absolute last function in a session.</td>
+</tr>
+</tbody>
+</table>
+<p>The call of <code>initEnvironment</code> returns a handle with a reference to the open database and pointers to low level functions accessing the specific type of database. This handle must be given as the first input parameter in the execution of all other function in the package. It is possible to open and access multiple databases - also of different types - in the same R session. Just execute <code>initEnvironment</code> for each relevant database and save the returned db handles in each distinct variable.</p>
+<p>Examples in the following sections demonstrates the use of these functions in a complete work flow.</p>
+</div>
+<div id="build-a-sqlite-send-database" class="section level2">
+<h2>Build a SQLite SEND database</h2>
+<p>It is possible to build an SQLite database with SEND data imported from a set of studies.</p>
+<table>
+<colgroup>
+<col width="7%"></col>
+<col width="92%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="../html/dbCreateSchema.html">dbCreateSchema</a></td>
+<td>Create a SEND schema, i.e. all the tables to represent the domains documented in SEND IG, in an open and empty database</td>
+</tr>
+<tr class="even">
+<td><a href="../html/dbCreateIndexes.html">dbCreateIndexes</a></td>
+<td>Create a set of indexes on the tables in a SEND database to optimize performance of extraction of data</td>
+</tr>
+<tr class="odd">
+<td><a href="../html/dbImportOneStudy.html">dbImportOneStudy</a></td>
+<td>Import SEND study data in SAS xport format into a SEND database from a single study folder</td>
+</tr>
+<tr class="even">
+<td><a href="../html/dbImportStudies.html">dbImportStudies</a></td>
+<td>Import SEND study data in SAS xport format into a SEND database from a hierarchy study folders</td>
+</tr>
+<tr class="odd">
+<td><a href="../html/dbDeleteStudies.html">dbDeleteStudies</a></td>
+<td>Delete one or more studies in SEND database</td>
+</tr>
+</tbody>
+</table>
+<p>It should be possible to import data into an existing SQLite SEND database using <code>dbImportOneStudy</code> and <code>dbImportStudies</code>, even though the tables are not created by <code>dbCreateSchema</code>. It is possible to delete studies in any SQLite SEND database <code>dbDeleteStudies</code> - whether or not the tables are created by <code>dbCreateSchema</code>.</p>
+<p>To make it possible to import data for a set of studies with <code>dbImportStudies</code>, the input data should be saved in folder structure like this:</p>
+<pre><code>/path/to/SEND/datasets  
++-- study01  
+   |   +-- ts.xpt  
+   |   +-- dm.xpt  
+   |   +-- ex.xpt  
+   |   +-- etc.  
++-- study02   
+   |   +-- ts.xpt  
+   |   +-- dm.xpt  
+   |   +-- ex.xpt  
+   |   +-- etc.  
++-- proj1234
+    +-- study11
+        |   +-- ts.xpt  
+        |   +-- dm.xpt  
+        |   +-- ex.xpt  
+        |   +-- etc.
+    +-- study12
+        |   +-- ts.xpt  
+        |   +-- dm.xpt  
+        |   +-- ex.xpt  
+        |   +-- etc.
++-- etc.</code></pre>
+<p>It is recommended to download <a href="https://sqlitebrowser.org">DB Browser for SQLite</a> to look at the data imported into the database.</p>
+<div id="examples" class="section level3">
+<h3>Examples</h3>
+<p>Create a new database, create all the SEND domain tables and import data for a set of studies XPT files saved in a folder hierarchy - create a set of indexes to optimize data extraction performance for the sendigR functions:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># The database is created by the call of  initEnvironment with the parameter dbCreate = TRUE:</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>dbToken &lt;-<span class="st"> </span><span class="kw">initEnvironment</span>(<span class="dt">dbType=</span><span class="st">&#39;sqlite&#39;</span>, </span>
+<span id="cb2-3"><a href="#cb2-3"></a>                           <span class="dt">dbPath=</span><span class="st">&#39;/path/to/db/send.db&#39;</span>, </span>
+<span id="cb2-4"><a href="#cb2-4"></a>                           <span class="dt">dbCreate=</span><span class="ot">TRUE</span>)</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># The tables must be created before any study can be imported</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="kw">dbCreateSchema</span>(dbToken)</span>
+<span id="cb2-8"><a href="#cb2-8"></a>                             </span>
+<span id="cb2-9"><a href="#cb2-9"></a>status &lt;-<span class="st"> </span><span class="kw">dbImportStudies</span>(dbToken, <span class="st">&#39;/path/to/SEND/datasets&#39;</span>, </span>
+<span id="cb2-10"><a href="#cb2-10"></a>                          <span class="co"># Print contiously the status for import each study:</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>                          <span class="dt">verbose =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb2-12"><a href="#cb2-12"></a>                          <span class="co"># sand save the status in a log file:</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>                          <span class="dt">logFilePath =</span> <span class="st">&#39;/path/to/log file&#39;</span>)</span>
+<span id="cb2-14"><a href="#cb2-14"></a></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co"># Create a set of indexes to increase query performance for the data extraction functions</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="co"># - they may be created before of after import of data</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="kw">dbCreateteIndexes</span>(dbToken)</span>
+<span id="cb2-18"><a href="#cb2-18"></a></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="kw">disconnectDB</span>(dbToken)</span></code></pre></div>
+<p>Open an existing database and import data for a single study, allow it to replace potential existing data for the the same study in the database. Delete another study from the database:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>dbToken &lt;-<span class="st"> </span><span class="kw">initEnvironment</span>(<span class="dt">dbType=</span><span class="st">&#39;sqlite&#39;</span>, <span class="dt">dbPath=</span><span class="st">&#39;/path/to/db/send.db&#39;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">dbImportOneStudy</span>(dbToken, <span class="st">&#39;/path/to/SEND/datasets/proj1234/study11&#39;</span>, <span class="dt">overWrite=</span><span class="ot">TRUE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">dbDeleteStudies</span>(dbToken, <span class="st">&#39;study99&#39;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="kw">disconnectDB</span>(dbToken)</span></code></pre></div>
+</div>
+</div>
+<div id="extract-and-filter-send-data" class="section level2">
+<h2>Extract and filter SEND data</h2>
+<p>These functions are divided into different groups:</p>
+<ul>
+<li><strong>Extract sets of studies</strong><br />
+Each of these functions extracts, filter and return studies for different kinds of conditions.<br />
+They can all be called with or without a set of studies given as input. In the former case, the extraction/filtering is based on the <code>TS</code> subset of input studies. In the latter case, the extraction/filtering is based on the full <code>TS</code> table.<br />
+The naming convention of these function are <code>getStudies</code><em><code>TSPARMCD</code></em>, where <em><code>TSPARMCD</code></em> is the specific TSPARMCD value handled by the function - e.g. <code>STSTDTC</code>.</li>
+<li><strong>Extract full set of control animals</strong><br />
+One function, <code>getControlSubj</code>, which extracts and return the set of control animals for a given input set of study id values.<br />
+Only ‘negative’ control animals are included in the set of control animals - i.e. animals which are not treated with any kind of compound.</li>
+<li><strong>Extract subsets of animals</strong><br />
+Each of these functions take a set of animals as input, extracts and return a subset fulfilling a given condition - e.g. for species or route of administration.<br />
+It is possible to execute each of these functions with no conditions for filtering - it will then just return the set of input rows with additional variables for the actual kind of attributes, e.g. sex or species/strain.<br />
+The naming convention of these function are <code>getSubj</code><em><code>attributes</code></em> where <em><code>attributes</code></em> is the specific attribute handled by the function - e.g. <code>Sex</code>.</li>
+<li><strong>Extract subject level data</strong><br />
+One function, <code>getControlSubj</code>, which extracts and return all rows for a given input set of animals from a specified subject level table - it can be any SEND table including <code>USUBJID</code> column.</li>
+<li><strong>Extract subsets of findings</strong><br />
+Each of these functions take a set of finding rows as input, extracts and return a subset fulfilling a given condition - e.g. for a specific study phase.<br />
+It is possible to execute each of these functions with no conditions for filtering - it will then just return the set of input rows with additional variables for the actual kind of attributes, e.g. the study phase.<br />
+The naming convention of these function are <code>getFindings</code><em><code>attributes</code></em> where <em><code>attributes</code></em> is the specific attribute handled by the function - e.g. <code>Phase</code>.</li>
+</ul>
+<p>The functions rely on the <em>data.table</em> package - and all input/output sets of data are data tables.</p>
+<p>The complete list of functions:</p>
+<table>
+<colgroup>
+<col width="7%"></col>
+<col width="92%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="../html/getStudiesSDESIGN.html">getStudiesSDESIGN</a></td>
+<td>Extract a list of SEND studies with a specified study design</td>
+</tr>
+<tr class="even">
+<td><a href="../html/getStudiesSTSTDTC.html">getStudiesSTSTDTC</a></td>
+<td>Extract a list of SEND studies with study start date within a specified interval</td>
+</tr>
+<tr class="odd">
+<td><a href="../html/getControlSubj.html">getControlSubj</a></td>
+<td>Extract a list of control animals for a list of studies</td>
+</tr>
+<tr class="even">
+<td><a href="../html/getSubjRoute.html">getSubjRoute</a></td>
+<td>Extract the set of animals of the specified route of administration - or just add actual route of administration for each animal.</td>
+</tr>
+<tr class="odd">
+<td><a href="../html/getSubjSpeciesStrain.html">getSubjSpeciesStrain</a></td>
+<td>Extract the set of animals of the specified species and strain - or just add the species and strain for each animal.</td>
+</tr>
+<tr class="even">
+<td><a href="../html/getSubjSex.html">getSubjSex</a></td>
+<td>Extract the set of animals of the specified sex - or just add the sex of each animal.</td>
+</tr>
+<tr class="odd">
+<td><a href="../html/getSubjData.html">getSubjData</a></td>
+<td>Extract data from a subject level domain.</td>
+</tr>
+<tr class="even">
+<td><a href="../html/getFindingsPhase.html">getFindingsPhase</a></td>
+<td>Extract a set of findings for a specified study phase - or just add phase for each animal</td>
+</tr>
+<tr class="odd">
+<td><a href="../html/getFindingsSubjAge.html">getFindingsSubjAge</a></td>
+<td>Add the subject age at finding time - and optionally extract the set of findings within a specified range of ages</td>
+</tr>
+</tbody>
+</table>
+<p>All the functions have an input parameter called <code>inclUncertain</code>, default value is <code>FALSE</code>.<br />
+If a function which is doing any kind of filtering is executed with:</p>
+<ul>
+<li><code>inclUncertain = FALSE</code><br />
+only rows where the filtering condition can be confidently matched are included in the output data set.<br />
+E.g. if <code>getSubjSpeciesStrain</code> cannot decide the species for an animal because the value does not match a value in the CDISC SEND CT code list ‘value <em>SPECIES</em>, the animal is excluded even though it could be a simple misspelling like ’RAAT’ instead of ‘RAT’</li>
+<li><code>inclUncertain = TRUE</code><br />
+both rows where the filtering condition can be confidently matched and rows where it’s not possible to decide that they does not match the filter condition, because the value cannot be decided with certainty, are included.<br />
+In the species example above, the animal with species ‘RAAT’ are included.<br />
+A variable named <code>UNCERTAIN_MSG</code> is included in the output data set - it contains an explanation of the uncertainty for the the uncertain rows.<br />
+The format of such a message is: <em><code>function id</code></em><code>:</code><em><code>explanation</code></em>, where <em><code>function id</code></em> indicates from which function the message originates from, e.g. <code>SpeciesStrain</code> for function <code>getSubjSpeciesStrain</code>. Multiple messages from same function separated by <code>&amp;</code>.<br />
+If the input data set contains an <code>UNCERTAIN_MSG</code> variable, uncertain messages are added to this variable. Messages from multiple functions are concatenated and separated by <code>|</code>.</li>
+</ul>
+<p>As mentioned above, some of the functions may be executed with no filter conditions just to add the relevant attributes to a set of data, e.g. a <code>SEX</code> variable is added to the output data set by execution of <code>getSubjSex</code>. In these cases, the additional variable is populated with the found value for all rows, also if the value cannot be confidently identified - e.g. when a DM.SEX value like ‘Male’ does not match any value in the CDISC SEND CT code list value <em>SEX</em>.<br />
+These functions have an input parameter called <code>noFilterReportUncertain</code>, which is equivalent to the <code>inclUncertain</code> parameter described above.<br />
+If one of these functions is executed with no filter condition and <code>noFilterReportUncertain = FALSE</code> (default), no explanation of whether the identified values are confident or not is included.<br />
+If a function is executed with no filter condition and <code>noFilterReportUncertain = TRUE</code>, a <code>NOT_VALID_MSG</code> variable is included in the output data set with an explanation of the reason for not confident values which may for found.<br />
+The format of this variable is equivalent to the <code>UNCERTAIN_MSG</code> variable described above.</p>
+<p>The intention with these functions are to build a work flow or pipeline to extract set(s) of animals, findings or other kinds of subject level data to be used for further analysis or similar - see an example below.</p>
+<div id="example" class="section level3">
+<h3>Example</h3>
+<p>Extract data to make this analysis:</p>
+<p>What are the most common microscopic findings in control Sprague-Dawley male rats 10 to 14 weeks old at finding time that were dosed by oral or oral gavage. Include parallel studies after 2016 and findings from the the treatment phase. Include uncertain records.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>db &lt;-<span class="st"> </span><span class="kw">initEnvironment</span>(<span class="dt">dbType=</span><span class="st">&#39;sqlite&#39;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2"></a>                      <span class="dt">dbPath=</span><span class="st">&#39;/path/to/db/send.db&#39;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Extract the relevant set of studies into data.table &#39;studies&#39;</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>studies &lt;-</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">  </span><span class="kw">getStudiesSDESIGN</span>(db,</span>
+<span id="cb4-7"><a href="#cb4-7"></a>                    <span class="dt">studyDesignFilter =</span> <span class="st">&#39;PARALLEL&#39;</span>,</span>
+<span id="cb4-8"><a href="#cb4-8"></a>                    <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="st">  </span><span class="kw">getStudiesSTSTDTC</span>(db, ., </span>
+<span id="cb4-10"><a href="#cb4-10"></a>                    <span class="dt">fromDTC =</span> <span class="st">&#39;2016&#39;</span>,</span>
+<span id="cb4-11"><a href="#cb4-11"></a>                    <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co"># Extract the complete set of control animals for the set of extracted studies </span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co"># into data.table &#39;controlAnimals&#39;:</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>controlAnimals &lt;-</span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="st">  </span><span class="kw">getControlSubj</span>(db, studies,</span>
+<span id="cb4-17"><a href="#cb4-17"></a>                 <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-18"><a href="#cb4-18"></a></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co"># Extract all </span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#  1: the males</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#  2: Sprague-Dawley rats</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#  3: animals dosed by oral or oral gavage</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="co"># from the set of control animals into data.table &#39;animals&#39;:</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a>animals &lt;-<span class="st"> </span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="st">  </span><span class="kw">getSubjSex</span>(db, controlAnimals, </span>
+<span id="cb4-26"><a href="#cb4-26"></a>              <span class="dt">sexFilter =</span> <span class="st">&#39;M&#39;</span>,</span>
+<span id="cb4-27"><a href="#cb4-27"></a>              <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="st">  </span><span class="kw">getSubjSpeciesStrain</span>(db, .,</span>
+<span id="cb4-29"><a href="#cb4-29"></a>                       <span class="dt">speciesFilter =</span> <span class="st">&#39;RAT&#39;</span>,</span>
+<span id="cb4-30"><a href="#cb4-30"></a>                       <span class="dt">strainFilter =</span> <span class="st">&#39;Sprague-Dawley&#39;</span>,</span>
+<span id="cb4-31"><a href="#cb4-31"></a>                       <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="st">  </span><span class="kw">getSubjRoute</span>(db, .,</span>
+<span id="cb4-33"><a href="#cb4-33"></a>               <span class="dt">routeFilter =</span> <span class="kw">c</span>(<span class="st">&#39;ORAL&#39;</span>, <span class="st">&#39;ORAL GAVAGE&#39;</span>),</span>
+<span id="cb4-34"><a href="#cb4-34"></a>               <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-35"><a href="#cb4-35"></a></span>
+<span id="cb4-36"><a href="#cb4-36"></a><span class="co"># Extract microscopic findings</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="co">#  1: all MI rows for the extrated set of animals</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a><span class="co">#  2: keep the MI rows from the treatment phase</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a><span class="co">#  3: keep the MI rows where the animals are between 10 and 14 weeks at the time </span></span>
+<span id="cb4-40"><a href="#cb4-40"></a><span class="co">#     of finding</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a><span class="co"># into data.table &#39;dataMI&#39;:</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a>dataMI &lt;-<span class="st"> </span></span>
+<span id="cb4-43"><a href="#cb4-43"></a><span class="st">  </span><span class="kw">getSubjData</span>(db, animals, <span class="st">&#39;MI&#39;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a><span class="st">  </span><span class="kw">getFindingsPhase</span>(db, .,</span>
+<span id="cb4-45"><a href="#cb4-45"></a>                   <span class="dt">phaseFilter =</span> <span class="st">&quot;treatment&quot;</span>,</span>
+<span id="cb4-46"><a href="#cb4-46"></a>                   <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a><span class="st">  </span><span class="kw">getFindingsSubjAge</span>(db, .,</span>
+<span id="cb4-48"><a href="#cb4-48"></a>                     <span class="dt">fromAge =</span> <span class="st">&#39;10w&#39;</span>,</span>
+<span id="cb4-49"><a href="#cb4-49"></a>                     <span class="dt">toAge =</span> <span class="st">&#39;14w&#39;</span>,</span>
+<span id="cb4-50"><a href="#cb4-50"></a>                     <span class="dt">inclUncertain =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-51"><a href="#cb4-51"></a>                     </span>
+<span id="cb4-52"><a href="#cb4-52"></a><span class="kw">disconnectDB</span>(db)</span></code></pre></div>
+<p>The resulting data.table <code>dataMI</code> contains all the extracted findings fulfilling the wanted conditions and can be used for further analysis. It includes both findings for animals which may have been identified as uncertain by one of the and findings which may have been identified as uncertain. The animal level of uncertainties are described in the <code>animal.UNCERTAIN_MSG</code> column and the findings are described in the <code>dataMI.UNCERTAIN_MSG</code> column</p>
+</div>
+</div>
+<div id="execute-senddashboard-app" class="section level2">
+<h2>Execute sendDashboard app</h2>
+<p>TO BE ADDED</p>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="../html/TO%20BE%20ADDED.html">TO BE ADDED</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="example-1" class="section level3">
+<h3>Example</h3>
+<p>TO BE ADDED</p>
+</div>
+</div>
+<div id="direct-access-to-the-database" class="section level2">
+<h2>Direct access to the database</h2>
+<p>TO BE ADDED</p>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="../html/genericQuery.html">genericQuery</a></td>
+<td>Execute database query and returns fetched rows</td>
+</tr>
+</tbody>
+</table>
+<div id="example-2" class="section level3">
+<h3>Example</h3>
+<p>TO BE ADDED</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
